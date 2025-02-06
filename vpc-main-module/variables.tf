@@ -45,3 +45,7 @@ variable "project" {
     default = "expense"
 }
 
+variable "is_vpc_peering_required" {
+  default = false
+  
+}
