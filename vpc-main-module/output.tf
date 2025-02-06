@@ -36,3 +36,6 @@
 #     value = data.aws_route_table.default.route_table_id
   
 # }
+output "vpc_id" {
+  value = aws_vpc.vpc.id
+}

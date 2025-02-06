@@ -32,3 +32,7 @@
 # output "default_route_table_id" {
 #   value = module.expense-vpc.def-route-table-id
 # }
+output "ex-vpc-id" {
+    value = module.expense-vpc.vpc_id
+  
+}

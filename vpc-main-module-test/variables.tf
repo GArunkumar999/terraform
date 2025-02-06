@@ -26,3 +26,15 @@ variable "cidr_list_database" {
     default = ["10.0.4.0/24","10.0.5.0/24"]
   
 }
+variable "project" {
+  default = "expense"
+  
+}
+variable "environment" {
+  default = "dev"
+  
+}
+variable "app" {
+  default = "mysql"
+  
+}
