@@ -1,6 +1,7 @@
-Expense VPC Module
+**Expense VPC Module**
 
-inputs:
+**inputs:**
+
 1. cidr_block(mandatory) please provide valid vpc cidr block.
 2. cidr_public(mandatory)please provide two valid public subnet cidr blocks.
 3. cidr_private(mandatory)please provide two valid private subnet cidr blocks.
