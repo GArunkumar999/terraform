@@ -7,3 +7,4 @@
 3. cidr_private(mandatory)please provide two valid private subnet cidr blocks.
 4. cidr_database(mandatory)please provide two valid database subnet cidr blocks.
 5. is_vpc_peering_required (optional) if you want peering connection with default vpc please set this has true.
+6. vpc_tags(optional) 
