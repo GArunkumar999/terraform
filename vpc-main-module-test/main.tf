@@ -4,4 +4,5 @@ module "expense-vpc" {
   cidr_public =  var.cidr_list_public
  cidr_private = var.cidr_list_private
  cidr_database = var.cidr_list_database
+  is_vpc_peering_required = true
 }

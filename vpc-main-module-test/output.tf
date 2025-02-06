@@ -10,3 +10,25 @@
 # output "vpc_id" {
 #     value = module.expense-vpc.route_id
 # }
+
+# output "def_vpc_id" {
+#     value = module.expense-vpc.default_vpc_id
+# }
+
+# output "def_vpc_cidr" {
+#     value = module.expense-vpc.default_vpc_cidr
+# }
+
+# output "peering_id" {
+#     value = module.expense-vpc.vpc_peering_connection_id
+  
+# }
+
+# output "public_route_id" {
+#     value = module.expense-vpc.pub_id
+  
+# }
+
+# output "default_route_table_id" {
+#   value = module.expense-vpc.def-route-table-id
+# }
