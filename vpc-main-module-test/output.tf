@@ -36,3 +36,13 @@ output "ex-vpc-id" {
     value = module.expense-vpc.vpc_id
   
 }
+
+output "pub_sub_ids" {
+  value = module.expense-vpc.public_subnet_ids
+}
+output "pri_sub_ids" {
+  value = module.expense-vpc.private_subnet_ids
+}
+output "db_sub_ids" {
+  value = module.expense-vpc.database_subnet_ids
+}

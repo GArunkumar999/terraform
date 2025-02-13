@@ -1,8 +1,8 @@
-resource "aws_security_group" "provision" {
+resource "aws_security_group" "provisioner" {
   name = "provision"
   # ... other configuration ...
 
-    ingress {
+  ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
@@ -23,15 +23,16 @@ resource "aws_security_group" "provision" {
   }
 
    tags = {
-    Name = "allow_tls"
+    Name = "allow_tlss"
   }
 }
 
 
 resource "aws_instance" "newinstance" {
-  ami           = "ami-09c813fb71547fc4f"  # Replace with a valid AMI ID
+  ami           = "ami-0c50b6f7dc3701ddd"  # Replace with a valid AMI ID
   instance_type = "t2.micro"
-  security_groups = [aws_security_group.provision.name]
+  security_groups = [aws_security_group.provisioner.name]
+  key_name = "arun1"
 
   tags = {
     Name = "server"
@@ -39,28 +40,28 @@ resource "aws_instance" "newinstance" {
 
     provisioner "local-exec" {
     command = "echo ${self.private_ip} > private.txt"
-  }
+   }
 
     connection {
     type     = "ssh"
     user     = "ec2-user"
-    password = "DevOps321"
+    private_key = file("arun1")
     host     = self.public_ip
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-     "sudo dnf install nginx -y",
-     "sudo systemctl start nginx",
-
-    ]
-  }
+   }
 
    provisioner "remote-exec" {
-    when = destroy
-    inline = [
-      "sudo systemctl stop nginx",
-    ]
-  }
+     inline = [
+      "sudo dnf install nginx -y",
+      "sudo systemctl start nginx",
+
+     ]
+   }
+
+    provisioner "remote-exec" {
+     when = destroy
+     inline = [
+       "sudo systemctl stop nginx",
+     ]
+   }
 }
 
