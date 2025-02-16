@@ -3,7 +3,7 @@ module "mysql-sg" {
   project_name = "expense"
   environment  = "dev"
   description  = "security group for mysql"
-  app          = "mysql-sg"
+  app          = "mysql"
   vpc_id       = data.aws_ssm_parameter.vpc_id.value
 
 
@@ -13,7 +13,7 @@ module "backend-sg" {
   project_name = "expense"
   environment  = "dev"
   description  = "security group for backend"
-  app          = "backend-sg"
+  app          = "backend"
   vpc_id       = data.aws_ssm_parameter.vpc_id.value
 
 }
@@ -22,7 +22,7 @@ module "frontend-sg" {
   project_name = "expense"
   environment  = "dev"
   description  = "security group for frontend"
-  app          = "frontend-sg"
+  app          = "frontend"
   vpc_id       = data.aws_ssm_parameter.vpc_id.value
 
 }
@@ -32,7 +32,7 @@ module "back-alb-sg" {
   project_name = "expense"
   environment  = "dev"
   description  = "security group for backend alb"
-  app          = "back-alb-sg"
+  app          = "back-alb"
   vpc_id       = data.aws_ssm_parameter.vpc_id.value
 
 
@@ -44,7 +44,7 @@ module "bastion-sg" {
   project_name = "expense"
   environment  = "dev"
   description  = "security group for bastion"
-  app          = "bastion-sg"
+  app          = "bastion"
   vpc_id       = data.aws_ssm_parameter.vpc_id.value
 
 }
@@ -54,14 +54,14 @@ module "openvpn-sg" {
   project_name = "expense"
   environment  = "dev"
   description  = "security group for openvpn"
-  app          = "openvpn-sg"
+  app          = "openvpn"
   vpc_id       = data.aws_ssm_parameter.vpc_id.value
 
 }
 
 
-
-resource "aws_security_group_rule" "app_alb_bastion" {
+#backend alb allowing http traffic from bastion
+resource "aws_security_group_rule" "back_alb_bastion" {
   type                     = "ingress"
   from_port                = 80
   to_port                  = 80
@@ -70,7 +70,7 @@ resource "aws_security_group_rule" "app_alb_bastion" {
   security_group_id        = module.back-alb-sg.sg_id
 }
 
-# JDOPS-32, Bastion host should be accessed from office n/w
+# bastion server should be accessed by anyone from anywhere
 resource "aws_security_group_rule" "bastion_public" {
   type              = "ingress"
   from_port         = 22
@@ -80,7 +80,7 @@ resource "aws_security_group_rule" "bastion_public" {
   security_group_id = module.bastion-sg.sg_id
 }
 
-
+#vpn sg allowing port 22 for ssh
 resource "aws_security_group_rule" "vpn_ssh" {
   type              = "ingress"
   from_port         = 22
@@ -89,6 +89,8 @@ resource "aws_security_group_rule" "vpn_ssh" {
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = module.openvpn-sg.sg_id
 }
+
+#vpn sg allowing https from anyone from anywhere
 resource "aws_security_group_rule" "vpn_443" {
   type              = "ingress"
   from_port         = 443
@@ -97,7 +99,7 @@ resource "aws_security_group_rule" "vpn_443" {
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = module.openvpn-sg.sg_id
 }
-
+#connect to vpn by enabling port 1194
 resource "aws_security_group_rule" "vpn_1194" {
   type              = "ingress"
   from_port         = 1194
@@ -107,6 +109,7 @@ resource "aws_security_group_rule" "vpn_1194" {
   security_group_id = module.openvpn-sg.sg_id
 }
 
+#connect to vpn by enabling port 943
 resource "aws_security_group_rule" "vpn_943" {
   type              = "ingress"
   from_port         = 943
@@ -115,7 +118,9 @@ resource "aws_security_group_rule" "vpn_943" {
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = module.openvpn-sg.sg_id
 }
-resource "aws_security_group_rule" "app_alb_openvpn" {
+
+#backend alb allowing http traffic from vpn
+resource "aws_security_group_rule" "back_alb_openvpn" {
   type                     = "ingress"
   from_port                = 80
   to_port                  = 80
@@ -124,6 +129,7 @@ resource "aws_security_group_rule" "app_alb_openvpn" {
   security_group_id        = module.back-alb-sg.sg_id
 }
 
+#mysql allowing 3306 traffic from bastion
 resource "aws_security_group_rule" "app_mysql_bastion" {
   type                     = "ingress"
   from_port                = 3306
@@ -133,6 +139,7 @@ resource "aws_security_group_rule" "app_mysql_bastion" {
   security_group_id        = module.mysql-sg.sg_id
 }
 
+#mysql allowing 3306 traffic from vpn
 resource "aws_security_group_rule" "app_mysql_vpn" {
   type                     = "ingress"
   from_port                = 3306
@@ -142,6 +149,7 @@ resource "aws_security_group_rule" "app_mysql_vpn" {
   security_group_id        = module.mysql-sg.sg_id
 }
 
+#backend allowing ssh traffic from vpn
 resource "aws_security_group_rule" "backend_vpn_ssh" {
   type                     = "ingress"
   from_port                = 22
@@ -151,6 +159,7 @@ resource "aws_security_group_rule" "backend_vpn_ssh" {
   security_group_id        = module.backend-sg.sg_id
 }
 
+#mysql allowing 3306 traffic from backend
 resource "aws_security_group_rule" "mysql_from_backend" {
   type                     = "ingress"
   from_port                = 3306
@@ -160,6 +169,7 @@ resource "aws_security_group_rule" "mysql_from_backend" {
   security_group_id        = module.mysql-sg.sg_id
 }
 
+#backend allowing 8080 traffic from vpn
 resource "aws_security_group_rule" "backend_vpn" {
   type                     = "ingress"
   from_port                = 8080
@@ -169,6 +179,7 @@ resource "aws_security_group_rule" "backend_vpn" {
   security_group_id        = module.backend-sg.sg_id
 }
 
+#backend allowing 8080 traffic from backend alb
 resource "aws_security_group_rule" "backend_alb" {
   type                     = "ingress"
   from_port                = 8080
@@ -178,7 +189,8 @@ resource "aws_security_group_rule" "backend_alb" {
   security_group_id        = module.backend-sg.sg_id
 }
 
-resource "aws_security_group_rule" "app_alb_openvpn_8080" {
+#backend alb allowing 8080 traffic from vpn 
+resource "aws_security_group_rule" "back_alb_openvpn_8080" {
   type                     = "ingress"
   from_port                = 8080
   to_port                  = 8080
