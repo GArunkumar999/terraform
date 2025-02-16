@@ -1,9 +1,8 @@
 
 # AWS Instance
 resource "aws_instance" "backend" {
-  ami           = "ami-0c50b6f7dc3701ddd"  # Replace with a valid AMI ID
+  ami           = "ami-09c813fb71547fc4f"  # Replace with a valid AMI ID
   instance_type = "t2.micro"
-  key_name = "arun1"
   vpc_security_group_ids = [data.aws_ssm_parameter.backend_sg_id.value]
    subnet_id     = local.pvt_id[0]
 
@@ -25,7 +24,7 @@ resource "null_resource" "backend" {
     host = aws_instance.backend.private_ip
     type = "ssh"
     user = "ec2-user"
-    private_key = file("arun1")
+    password = "DevOps321"
   }
 
     provisioner "file" {

@@ -6,6 +6,7 @@ module "mysql-sg" {
   app          = "mysql-sg"
   vpc_id       = data.aws_ssm_parameter.vpc_id.value
 
+
 }
 module "backend-sg" {
   source       = "github.com/GArunkumar999/terraform.git/sg-module?ref=main"
@@ -141,11 +142,47 @@ resource "aws_security_group_rule" "app_mysql_vpn" {
   security_group_id        = module.mysql-sg.sg_id
 }
 
-resource "aws_security_group_rule" "backend_vpn" {
+resource "aws_security_group_rule" "backend_vpn_ssh" {
   type                     = "ingress"
   from_port                = 22
   to_port                  = 22
   protocol                 = "tcp"
   source_security_group_id = module.openvpn-sg.sg_id
   security_group_id        = module.backend-sg.sg_id
+}
+
+resource "aws_security_group_rule" "mysql_from_backend" {
+  type                     = "ingress"
+  from_port                = 3306
+  to_port                  = 3306
+  protocol                 = "tcp"
+  source_security_group_id = module.backend-sg.sg_id
+  security_group_id        = module.mysql-sg.sg_id
+}
+
+resource "aws_security_group_rule" "backend_vpn" {
+  type                     = "ingress"
+  from_port                = 8080
+  to_port                  = 8080
+  protocol                 = "tcp"
+  source_security_group_id = module.openvpn-sg.sg_id
+  security_group_id        = module.backend-sg.sg_id
+}
+
+resource "aws_security_group_rule" "backend_alb" {
+  type                     = "ingress"
+  from_port                = 8080
+  to_port                  = 8080
+  protocol                 = "tcp"
+  source_security_group_id = module.back-alb-sg.sg_id
+  security_group_id        = module.backend-sg.sg_id
+}
+
+resource "aws_security_group_rule" "app_alb_openvpn_8080" {
+  type                     = "ingress"
+  from_port                = 8080
+  to_port                  = 8080
+  protocol                 = "tcp"
+  source_security_group_id = module.openvpn-sg.sg_id
+  security_group_id        = module.back-alb-sg.sg_id
 }
