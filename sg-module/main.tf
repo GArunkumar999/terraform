@@ -13,7 +13,7 @@ resource "aws_security_group" "main" {
 
 
   tags ={
-    Name = "${var.project_name}-${var.environment}-${var.name}"
+    Name = "${var.project_name}-${var.environment}-${var.app}"
   }
 
 
