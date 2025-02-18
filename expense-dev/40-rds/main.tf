@@ -7,6 +7,8 @@ module "db" {
   engine_version    = "8.0.40"
   instance_class    = "db.t4g.micro"
   allocated_storage = 20
+  skip_final_snapshot = true
+
 
 
 

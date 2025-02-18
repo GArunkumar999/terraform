@@ -19,6 +19,12 @@ resource "aws_ssm_parameter" "back-alb-sg" {
   type  = "String"
   value = module.back-alb-sg.sg_id
 }
+
+resource "aws_ssm_parameter" "web-alb-sg" {
+  name  = "/${var.project}/${var.environment}/web-alb_sg_id"
+  type  = "String"
+  value = module.web-alb-sg.sg_id
+}
 resource "aws_ssm_parameter" "bastionsg" {
   name  = "/${var.project}/${var.environment}/bastion_sg_id"
   type  = "String"

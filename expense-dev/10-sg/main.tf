@@ -39,6 +39,19 @@ module "back-alb-sg" {
 
 }
 
+
+module "web-alb-sg" {
+  source       = "github.com/GArunkumar999/terraform.git/sg-module?ref=main"
+  project_name = "expense"
+  environment  = "dev"
+  description  = "security group for web alb"
+  app          = "web-alb"
+  vpc_id       = data.aws_ssm_parameter.vpc_id.value
+
+
+
+}
+
 module "bastion-sg" {
   source       = "github.com/GArunkumar999/terraform.git/sg-module?ref=main"
   project_name = "expense"
@@ -69,6 +82,15 @@ resource "aws_security_group_rule" "back_alb_bastion" {
   source_security_group_id = module.bastion-sg.sg_id
   security_group_id        = module.back-alb-sg.sg_id
 }
+# frontend allowing traffic from web alb
+resource "aws_security_group_rule" "frontend_web_alb" {
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  source_security_group_id = module.web-alb-sg.sg_id
+  security_group_id = module.frontend-sg.sg_id
+}
 
 # bastion server should be accessed by anyone from anywhere
 resource "aws_security_group_rule" "bastion_public" {
@@ -80,6 +102,26 @@ resource "aws_security_group_rule" "bastion_public" {
   security_group_id = module.bastion-sg.sg_id
 }
 
+resource "aws_security_group_rule" "frontend_sg_public" {
+  type              = "ingress"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = module.frontend-sg.sg_id
+}
+
+# web alb should be accessed by anyone from anywhere from https
+resource "aws_security_group_rule" "web_alb_public" {
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = module.web-alb-sg.sg_id
+}
+
+
 #vpn sg allowing port 22 for ssh
 resource "aws_security_group_rule" "vpn_ssh" {
   type              = "ingress"
@@ -89,6 +131,7 @@ resource "aws_security_group_rule" "vpn_ssh" {
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = module.openvpn-sg.sg_id
 }
+
 
 #vpn sg allowing https from anyone from anywhere
 resource "aws_security_group_rule" "vpn_443" {
@@ -198,3 +241,14 @@ resource "aws_security_group_rule" "back_alb_openvpn_8080" {
   source_security_group_id = module.openvpn-sg.sg_id
   security_group_id        = module.back-alb-sg.sg_id
 }
+
+#backend alb allowing 8080 from frontend server(nginx.conf)
+resource "aws_security_group_rule" "back_alb_frontend_8080" {
+  type                     = "ingress"
+  from_port                = 8080
+  to_port                  = 8080
+  protocol                 = "tcp"
+  source_security_group_id = module.frontend-sg.sg_id
+  security_group_id        = module.back-alb-sg.sg_id
+}
+
