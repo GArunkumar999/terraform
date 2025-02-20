@@ -1,19 +1,19 @@
 variable "names" {
-    default = ["mysql","backend","frontend"]
-  
+  default = ["mysql", "backend", "frontend"]
+
 }
 
 variable "environment" {
-  
+
 }
 
 variable "project" {
-     default = "expense"
+  default = "expense"
 }
 
 variable "common_tags" {
-    type = map
-    default = {
-        Project = "expense"
-    }
+  type = map(any)
+  default = {
+    Project = "expense"
+  }
 }

@@ -2,9 +2,9 @@
 resource "aws_security_group" "tf" {
   name        = "tf"
   description = "Allow ssh"
-tags = {
-  Name = "ALLOW-ALL"
-}
+  tags = {
+    Name = "ALLOW-ALL"
+  }
 
   ingress {
     from_port   = 22

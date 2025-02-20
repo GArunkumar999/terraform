@@ -1,7 +1,7 @@
 # # variable "sg_id" {
 
 # #     default = [aws_security_group.new-sg.id]
-  
+
 # # }
 
 # Ah, I see! The error is because **variables cannot reference resources directly** in their `default` values. This is a limitation in Terraform—resource attributes like `aws_security_group.new-sg.id` cannot be referenced directly in the `default` block of a variable. Variables can only have static values (such as strings, numbers, or lists), not dynamic ones that depend on other resources.

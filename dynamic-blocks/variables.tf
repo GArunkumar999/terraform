@@ -1,5 +1,5 @@
 variable "ingress_var" {
-  type = list
+  type = list(any)
   default = [
     {
       from_port   = 80

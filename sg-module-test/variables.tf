@@ -1,16 +1,16 @@
 variable "project" {
-    default = "expense"
-  
+  default = "expense"
+
 }
 variable "environment" {
-    default = "dev"
-  
+  default = "dev"
+
 }
 variable "app" {
-    default = "mysql"
-  
+  default = "mysql"
+
 }
 variable "description" {
-    default = "sg for expense dev mysql server"
-  
+  default = "sg for expense dev mysql server"
+
 }

@@ -4,7 +4,7 @@ variable "names" {
 }
 
 variable "domain" {
-    type = string
-    default = "devopslearning.fun"
-  
+  type    = string
+  default = "devopslearning.fun"
+
 }

@@ -1,17 +1,17 @@
 variable "instance" {
 
-    default = {
-        mysql = "t2.small"
-        backend = "t2.micro"
-        frontend = "t3.micro"
-    }
-  
+  default = {
+    mysql    = "t2.small"
+    backend  = "t2.micro"
+    frontend = "t3.micro"
+  }
+
 }
 
 variable "domain" {
 
-    default = "devopslearning.fun"
-  
+  default = "devopslearning.fun"
+
 }
 
 variable "zone_id" {

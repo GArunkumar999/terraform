@@ -5,13 +5,13 @@ terraform {
       version = "5.84.0"
     }
   }
-    backend "s3" {
+  backend "s3" {
     bucket         = "tf-state--lock-buckets"
-     key            = "file.state"
+    key            = "file.state"
     region         = "us-east-1"
     dynamodb_table = "TF-state-table"
   }
-   
+
 }
 
 

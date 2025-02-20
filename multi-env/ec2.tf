@@ -1,15 +1,15 @@
 resource "aws_instance" "expense" {
-  count = length(var.names)
-  ami           = "ami-0ac4dfaf1c5c0cce9"  # Replace with a valid AMI ID
-  instance_type = "t2.micro"
+  count           = length(var.names)
+  ami             = "ami-0ac4dfaf1c5c0cce9" # Replace with a valid AMI ID
+  instance_type   = "t2.micro"
   security_groups = [aws_security_group.multi-env.name]
 
-   tags = merge(
-     var.common_tags,
+  tags = merge(
+    var.common_tags,
     {
-        Name = "${var.project}-${var.environment}-${var.names[count.index]}" # expense-dev-mysql
+      Name = "${var.project}-${var.environment}-${var.names[count.index]}" # expense-dev-mysql
     }
-   )
+  )
 }
 
 
@@ -18,7 +18,7 @@ resource "aws_instance" "expense" {
 resource "aws_security_group" "multi-env" {
   name        = "${var.project}-${var.environment}"
   description = "Allow ssh"
-    tags = {
+  tags = {
     Name = "MULTI-ENV"
   }
 
@@ -28,16 +28,16 @@ resource "aws_security_group" "multi-env" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-   
+
 
   # You can add more rules as needed
   egress {
     from_port   = 0
     to_port     = 0
-    protocol    = "-1"  # Allow all outbound traffic
+    protocol    = "-1" # Allow all outbound traffic
     cidr_blocks = ["0.0.0.0/0"]
   }
-   
+
 }
 
 

@@ -5,7 +5,7 @@ terraform {
       version = "5.84.0"
     }
   }
-   
+
   backend "s3" {
     bucket         = "my-tf-state-buckets5"
     key            = "file.state"

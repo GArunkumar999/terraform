@@ -27,12 +27,12 @@ resource "aws_instance" "example_instance" {
 }
 
 # Define an output variable to expose the public IP address of the EC2 instance
-output "full_output"{
+output "full_output" {
   description = "Public IP address of the EC2 instance"
   value       = aws_instance.example_instance #full output
 }
 
-output "availability_zone"{
+output "availability_zone" {
   description = "print availability zone"
   value       = aws_instance.example_instance.availability_zone #only availability zone
 }
