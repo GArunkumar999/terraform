@@ -127,11 +127,12 @@ resource "aws_security_group_rule" "mysql-bastion" {
   security_group_id        = module.mysql-sg.sg_id
 }
 
+#eks actually do dns resolution on udp
 resource "aws_security_group_rule" "node-vpc" {
   type              = "ingress"
   from_port         = 0
   to_port           = 0
-  protocol          = "tcp"
+  protocol          = "-1"
   cidr_blocks       = ["10.0.0.0/16"]
   security_group_id = module.node-sg.sg_id
 }
@@ -152,4 +153,13 @@ resource "aws_security_group_rule" "bastion-public" {
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = module.bastion_sg.sg_id
+}
+
+resource "aws_security_group_rule" "eks-control-plane-bastion" {
+  type                     = "ingress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  source_security_group_id = module.bastion_sg.sg_id
+  security_group_id        = module.eks-control-plane-sg.sg_id
 }
