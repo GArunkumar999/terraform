@@ -1,4 +1,4 @@
-module "vpc" {
+module "eks-vpc" {
   source        = "github.com/GArunkumar999/terraform.git/vpc-main-module?ref=main"
   cidr_block    = "10.0.0.0/16"
   cidr_public   = ["10.0.0.0/24", "10.0.1.0/24"]
